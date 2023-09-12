@@ -54,15 +54,15 @@ class SignUp(BaseModel):
 
 @router.post("/auth/sign-up", tags=["auth"])
 async def sign_up(user: SignUp):
-    password = encryptPassword(user.password)
+    encrypted_password = encryptPassword(user.password)
     created = await prisma.user.create(
         {
             "email": user.email,
-            "password": encryptPassword(user.password),
+            "password": encrypted_password,
             "name": user.name,
             "nickname": user.nickname,
-            "birthDay": user.birthday,
-            "gender": user.gender,
+            "birthDay": user.birthday.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+            "gender": user.gender.value,
             "phone": user.phone,
         }
     )

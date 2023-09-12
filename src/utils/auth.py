@@ -1,11 +1,12 @@
-from datetime import datetime, timedelta, timezone
-from typing_extensions import Self
-from typing import Dict
-from fastapi import Request, HTTPException
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 import os
+from datetime import datetime, timedelta, timezone
+from typing import Dict
+
 import bcrypt
 import jwt
+from fastapi import HTTPException, Request
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from typing_extensions import Self
 
 jwtSecret = os.environ.get("JWT_SECRET")
 
@@ -25,7 +26,8 @@ def signJWT(user_id: str) -> Dict[str, str]:
 def decodeJWT(token: str) -> dict:
     try:
         decoded = jwt.decode(token, jwtSecret, algorithms=["HS256"])
-        return decoded if decoded["expires"] else None
+        # {'exp': 1726025029, 'userId': 'clmfqsnon0000nvsbakfcafis'}
+        return decoded if decoded["exp"] else None
     except jwt.ExpiredSignatureError:
         print("Token expired. Get new one")
         return None

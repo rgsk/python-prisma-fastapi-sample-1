@@ -1,5 +1,7 @@
 from typing import List
+
 from fastapi import APIRouter, Depends
+
 from src.prisma import prisma
 from src.utils.auth import JWTBearer, decodeJWT
 
@@ -9,12 +11,14 @@ router = APIRouter()
 @router.get("/users/", tags=["users"])
 async def read_users():
     users = await prisma.user.find_many()
-    print("users", users)
-
     for user in users:
         del user.password
 
     return users
+
+
+# Set header
+# "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3MjYwMjUwMjksInVzZXJJZCI6ImNsbWZxc25vbjAwMDBudnNiYWtmY2FmaXMifQ.rEzYzEnt4EIP1k5LiceqGEIWg18zKZMSdXUXZNA-a-0"
 
 
 @router.get("/users/me", tags=["users"])
